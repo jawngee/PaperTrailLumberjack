@@ -55,6 +55,11 @@
 @property (nonatomic, assign) BOOL useTLS;
 
 /**
+ Specifies if this should enable debug logging for this class.
+ */
+@property (nonatomic, assign) BOOL debug;
+
+/**
  Returns a initialized singleton instance of this logger
  */
 + (RMPaperTrailLogger* _Nullable)sharedInstance;

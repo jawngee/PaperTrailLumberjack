@@ -40,6 +40,7 @@
         _sharedInstance.logFormatter = logFormatter;
         _sharedInstance.useTcp = YES;
         _sharedInstance.useTLS = YES;
+        _sharedInstance.debug = NO;
     });
     
     return _sharedInstance;
@@ -147,13 +148,17 @@
     NSError *error = nil;
     [self.tcpSocket connectToHost:self.host onPort:self.port error:&error];
     if (error != nil) {
-        NSLog(@"Error connecting to host: %@", error);
+        if (self.debug) {
+            NSLog(@"Error connecting to host: %@", error);
+        }
         return;
     }
     
     if (self.useTLS) {
 #ifdef DEBUG
-        NSLog(@"Starting TLS");
+        if (self.debug) {
+            NSLog(@"Starting TLS");
+        }
 #endif
         [self.tcpSocket startTLS:nil];
     }
@@ -165,32 +170,44 @@
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(UInt16)port
 {
-    NSLog(@"Socket did connect to host");
+    if (self.debug) {
+        NSLog(@"Socket did connect to host");
+    }
 }
 
 - (void)socketDidSecure:(GCDAsyncSocket *)sock
 {
-    NSLog(@"Socket did secure");
+    if (self.debug) {
+        NSLog(@"Socket did secure");
+    }
 }
 
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)error
 {
-    NSLog(@"Socket did disconnect. Error: %@", error);
+    if (self.debug) {
+        NSLog(@"Socket did disconnect. Error: %@", error);
+    }
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
 {
-    NSLog(@"Socket did write data");
+    if (self.debug) {
+        NSLog(@"Socket did write data");
+    }
 }
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didSendDataWithTag:(long)tag
 {
-    NSLog(@"UDP Socket did write data");
+    if (self.debug) {
+        NSLog(@"UDP Socket did write data");
+    }
 }
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotSendDataWithTag:(long)tag dueToError:(NSError *)error
 {
-    NSLog(@"UDP Socket Error: %@", error.localizedDescription);
+    if (self.debug) {
+        NSLog(@"UDP Socket Error: %@", error.localizedDescription);
+    }
 }
 
 #endif
